@@ -9,5 +9,10 @@ exports.handler = (event, context, callback) => {
     }),
   };
 
-  console.log('event')
-}
+  console.log('event: ', JSON.stringify(event));
+
+  var body = event.Records[0].body;
+  console.log("text: ",JSON.parse(body).text);
+
+  callback(null, response);
+};
