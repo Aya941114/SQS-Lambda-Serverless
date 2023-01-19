@@ -1,0 +1,74 @@
+
+service: sls-sqs-test
+configValidationMode: error
+
+custom:
+  settings:
+    ACCOUNT_ID: "715313303364"
+
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  profile: 'serverlessUser1'
+  region: 'us-east-1'
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sqs:SendMessage"
+        - "sqs:GetQueueUrl"
+      Resource: "arn:aws:sqs:${self:provider.region}:715313303364:MyQueue"
+    - Effect: "Allow"
+      Action:
+        - "sqs:ListQueues"
+      Resource: "arn:aws:sqs:${self:provider.region}:715313303364:*"
+
+
+functions:
+  sender:
+    handler: sender.handler
+    events:
+      - http:
+          path: v1/sender
+          method: post 
+  receiver:
+    handler: receiver.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - MyQueue
+              - Arn 
+
+resources:
+ Resources:
+   MyQueue:
+     Type: "AWS::SQS::Queue"
+     Properties:
+       QueueName: "MyQueue"
+
+# functions:
+#   hello:
+#     handler: handler.hello
+#     events:
+#       - http:
+#           method: get 
+#           path: hello
+
+#   sqsHello:
+#     handler: handler.sqsHello
+#     events:
+#       - sqs:
+#           arn:
+#             Fn::GetAtt:
+#               - MyQueue
+#               - Arn
+#           batchSize: 1
+
+# you can add CloudFormation resource templates here
+# resources:
+#  Resources:
+#    NewResource:
+#      Type: "AWS::SQS::Queue"
+#      Properties:
+#        QueueName: "MyQueue"
