@@ -12,16 +12,18 @@ provider:
   runtime: nodejs12.x
   profile: 'serverlessUser1'
   region: 'us-east-1'
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action:
-        - "sqs:SendMessage"
-        - "sqs:GetQueueUrl"
-      Resource: "arn:aws:sqs:${self:provider.region}:715313303364:MyQueue"
-    - Effect: "Allow"
-      Action:
-        - "sqs:ListQueues"
-      Resource: "arn:aws:sqs:${self:provider.region}:715313303364:*"
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "sqs:SendMessage"
+            - "sqs:GetQueueUrl"
+          Resource: "arn:aws:sqs:${self:provider.region}:715313303364:MyQueue"
+        - Effect: "Allow"
+          Action:
+            - "sqs:ListQueues"
+          Resource: "arn:aws:sqs:${self:provider.region}:715313303364:*"
 
 
 functions:
